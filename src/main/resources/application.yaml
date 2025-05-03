@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: Inventory Service
+
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  r2dbc:
+    driver: h2
+    url: r2dbc:h2:file:///./data/h2db/product-catalog-db
+    username:
+    password:
+    pool:
+      enabled: false
+
+  flyway:
+    enabled: true
+    url: jdbc:h2:file:./data/h2db/product-catalog-db
+    #schemas: ${DB_SCHEMA_NAME:public}  # Schema for Flyway migrations
+    placeholder-prefix: "$$${"
+    placeholder-suffix: "}$$$"
+
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+server:
+  port: 8282

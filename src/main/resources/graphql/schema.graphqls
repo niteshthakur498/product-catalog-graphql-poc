@@ -1,0 +1,44 @@
+type Product {
+    id: ID
+    name: String
+    description: String
+    category: String
+    price: Float
+    stock: Int
+    sku: String
+    active: Boolean
+    createdAt: String
+    updatedAt: String
+}
+
+input ProductFilter {
+    name: String
+    category: String
+    priceMin: Float
+    priceMax: Float
+}
+
+input SortCriteria {
+    field: String
+    direction: SortDirection = ASC
+}
+
+enum SortDirection {
+    ASC
+    DESC
+}
+
+type ProductConnection {
+    content: [Product!]!
+    totalElements: Int!
+    totalPages: Int!
+    currentPage: Int!
+    pageSize: Int!
+}
+
+type Query{
+    getAllProducts:[Product]
+    getProducts(filter: ProductFilter): [Product]
+    getProductsSorted(filter: ProductFilter, sort: SortCriteria): [Product]
+    getProductsSortedPaged(filter: ProductFilter, sort: SortCriteria, page: Int = 0, size: Int = 10): ProductConnection
+}
