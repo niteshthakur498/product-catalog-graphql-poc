@@ -1,0 +1,45 @@
+<configuration>
+
+    <!-- Define properties for reuse -->
+    <property name="log.level" value="${LOG_LEVEL:-INFO}}" />
+    <property name="log.pattern" value="%d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %n" />
+    <property name="log.file.path" value="logs/app.log" />
+    <property name="log.rolling.pattern" value="logs/app-%d{yy-MM-dd}-%i.log" />
+    <property name="log.max.file.size" value="5MB" />
+    <property name="log.max.history" value="30" />
+
+    <!-- Console Appender for logging to the console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling File Appender for logging to a file -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.file.path}</file>
+
+        <!-- Rolling policy configuration -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.rolling.pattern}</fileNamePattern>
+            <maxFileSize>${log.max.file.size}</maxFileSize>
+            <maxHistory>${log.max.history}</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>  <!-- Optional: Set a total size cap for rolled logs -->
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger Configuration -->
+    <root level="${log.level}">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ROLLING" />
+    </root>
+
+    <!--    &lt;!&ndash; Optional: Specific loggers for finer control &ndash;&gt;-->
+    <!--    <logger name="org.springframework.web" level="${log.level}" />-->
+    <!--    <logger name="org.springframework.boot" level="${log.level}" />-->
+
+</configuration>
