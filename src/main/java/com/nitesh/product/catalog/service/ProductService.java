@@ -128,20 +128,20 @@ public class ProductService {
         String sql = buildQuery(filter, sort);
 
         DatabaseClient.GenericExecuteSpec spec = databaseClient.sql(sql);
-
-        if (filter.getName() != null) {
-            spec = spec.bind("name", "%" + filter.getName() + "%");
+        if (filter != null){
+            if (filter.getName() != null) {
+                spec = spec.bind("name", "%" + filter.getName() + "%");
+            }
+            if (filter.getCategory() != null) {
+                spec = spec.bind("category", filter.getCategory());
+            }
+            if (filter.getPriceMin() != null) {
+                spec = spec.bind("priceMin", filter.getPriceMin());
+            }
+            if (filter.getPriceMax() != null) {
+                spec = spec.bind("priceMax", filter.getPriceMax());
+            }
         }
-        if (filter.getCategory() != null) {
-            spec = spec.bind("category", filter.getCategory());
-        }
-        if (filter.getPriceMin() != null) {
-            spec = spec.bind("priceMin", filter.getPriceMin());
-        }
-        if (filter.getPriceMax() != null) {
-            spec = spec.bind("priceMax", filter.getPriceMax());
-        }
-
         int offset = page * size;
 
         spec = spec.bind("limit", size).bind("offset", offset);
@@ -168,35 +168,25 @@ public class ProductService {
 
     public Mono<Integer> countTotalMatching(ProductFilter filter) {
         StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM product WHERE 1=1");
-
-        if (filter.getName() != null) {
-            countSql.append(" AND name ILIKE :name");
-        }
-        if (filter.getCategory() != null) {
-            countSql.append(" AND category = :category");
-        }
-        if (filter.getPriceMin() != null) {
-            countSql.append(" AND price >= :priceMin");
-        }
-        if (filter.getPriceMax() != null) {
-            countSql.append(" AND price <= :priceMax");
-        }
-
         DatabaseClient.GenericExecuteSpec spec = databaseClient.sql(countSql.toString());
-
-        if (filter.getName() != null) {
-            spec = spec.bind("name", "%" + filter.getName() + "%");
+        if(filter!=null) {
+            if (filter.getName() != null) {
+                countSql.append(" AND name ILIKE :name");
+                spec = spec.bind("name", "%" + filter.getName() + "%");
+            }
+            if (filter.getCategory() != null) {
+                countSql.append(" AND category = :category");
+                spec = spec.bind("category", filter.getCategory());
+            }
+            if (filter.getPriceMin() != null) {
+                countSql.append(" AND price >= :priceMin");
+                spec = spec.bind("priceMin", filter.getPriceMin());
+            }
+            if (filter.getPriceMax() != null) {
+                countSql.append(" AND price <= :priceMax");
+                spec = spec.bind("priceMax", filter.getPriceMax());
+            }
         }
-        if (filter.getCategory() != null) {
-            spec = spec.bind("category", filter.getCategory());
-        }
-        if (filter.getPriceMin() != null) {
-            spec = spec.bind("priceMin", filter.getPriceMin());
-        }
-        if (filter.getPriceMax() != null) {
-            spec = spec.bind("priceMax", filter.getPriceMax());
-        }
-
         return spec.map(row -> {
             Object count = row.get(0);
             System.out.println("Type of count: " + count.getClass());
